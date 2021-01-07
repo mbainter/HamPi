@@ -22,7 +22,7 @@
   - name: Download D-Rats sources
     git:
       repo: https://github.com/maurizioandreotti/D-Rats.git
-      dest: /home/pi/hamradio/D-Rats
+      dest: "/home/{{ pi_user }}/hamradio/D-Rats"
 
   - name: Install D-Rats update script
     become: yes

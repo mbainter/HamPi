@@ -26,7 +26,7 @@
 
   - name: Create directory hamradio
     file:
-      path: /home/pi/hamradio
+      path: "/home/{{ pi_user }}/hamradio"
       state: directory
 
   - name: Install dependent libraries
@@ -81,22 +81,22 @@
   - name: Git clone latest GPSd sources
     git:
       repo: https://gitlab.com/gpsd/gpsd.git
-      dest: /home/pi/hamradio/gpsd
+      dest: "/home/{{ pi_user }}/hamradio/gpsd"
 
   - name: Build GPSd sources
     shell: scons prefix=/usr
     args:
-      chdir: /home/pi/hamradio/gpsd
+      chdir: "/home/{{ pi_user }}/hamradio/gpsd"
 
   - name: Install GPSd
     become: yes
     shell: scons install
     args:
-      chdir: /home/pi/hamradio/gpsd
+      chdir: "/home/{{ pi_user }}/hamradio/gpsd"
 
   - name: Remove GPSd build directory
     file:
-      path: /home/pi/hamradio/gpsd
+      path: "/home/{{ pi_user }}/hamradio/gpsd"
       state: absent
 
   - name: Fix a troublesome gpsd config entry
@@ -126,45 +126,45 @@
   - name: Git clone latest Direwolf sources
     git:
       repo: https://www.github.com/wb2osz/direwolf
-      dest: /home/pi/hamradio/direwolf
+      dest: "/home/{{ pi_user }}/hamradio/direwolf"
 
   - name: Checkout Dev Direwolf sources
     shell: git checkout dev
     args:
-      chdir: /home/pi/hamradio/direwolf
+      chdir: "/home/{{ pi_user }}/hamradio/direwolf"
 
   - name: Fix check for D.R.A.W.S. support
     lineinfile:
-      path: /home/pi/hamradio/direwolf/src/dwgpsd.c
+      path: "/home/{{ pi_user }}/hamradio/direwolf/src/dwgpsd.c"
       regexp: '^#if GPSD_API_MAJOR_VERSION \< 5 \|\| GPSD_API_MAJOR_VERSION \> 10'
       line: '#if GPSD_API_MAJOR_VERSION < 5 || GPSD_API_MAJOR_VERSION > 11'
 
   - name: Create directory direwolf/build
     file:
-      path: /home/pi/hamradio/direwolf/build
+      path: "/home/{{ pi_user }}/hamradio/direwolf/build"
       state: directory
 
   - name: Build Dev Direwolf CMakeFiles
     command: cmake ..
     args:
-      chdir: /home/pi/hamradio/direwolf/build
+      chdir: "/home/{{ pi_user }}/hamradio/direwolf/build"
 
   - name: Build Dev Direwolf
     command: make
     args:
-      chdir: /home/pi/hamradio/direwolf/build
+      chdir: "/home/{{ pi_user }}/hamradio/direwolf/build"
 
   - name: Install Dev Direwolf
     become: yes
     command: make install
     args:
-      chdir: /home/pi/hamradio/direwolf/build
+      chdir: "/home/{{ pi_user }}/hamradio/direwolf/build"
 
   - name: Install-conf Dev Direwolf
     become: yes
     command: make install-conf
     args:
-      chdir: /home/pi/hamradio/direwolf/build
+      chdir: "/home/{{ pi_user }}/hamradio/direwolf/build"
 
   - name: Modify categories for direwolf.desktop
     become: yes
@@ -175,7 +175,7 @@
 
   - name: Remove Dev Direwolf build directory
     file:
-      path: /home/pi/hamradio/direwolf
+      path: "/home/{{ pi_user }}/hamradio/direwolf"
       state: absent
 
 #
@@ -188,27 +188,27 @@
   - name: Git clone latest DRAWS Manager sources
     git:
       repo: https://github.com/nwdigitalradio/draws-manager.git
-      dest: /home/pi/hamradio/draws-manager
+      dest: "/home/{{ pi_user }}/hamradio/draws-manager"
 
   - name: Install DRAWS Manager service file
     become: yes
     shell: cp draws-manager.service /lib/systemd/system
     args:
-      chdir: /home/pi/hamradio/draws-manager
+      chdir: "/home/{{ pi_user }}/hamradio/draws-manager"
 
   - name: Install DRAWS Manager config file
     become: yes
     shell: cp draws-manager /etc/default
     args:
-      chdir: /home/pi/hamradio/draws-manager
+      chdir: "/home/{{ pi_user }}/hamradio/draws-manager"
 
   - name: Install DRAWS-Manager webapp
     become: yes
     shell: /usr/bin/npm install
     args:
-      chdir: /home/pi/hamradio/draws-manager/webapp
+      chdir: "/home/{{ pi_user }}/hamradio/draws-manager/webapp"
 
   - name: Add Northwest Digital Documentation to Desktop
     copy:
-      src: "{{ playbook_dir }}/../files/home/pi/Desktop/Activating your DRAWS™ HAT.pdf"
-      dest: "/home/pi/Desktop/Activating your DRAWS™ HAT.pdf"
+      src: "{{ playbook_dir }}/../files/home/{{ pi_user }}/Desktop/Activating your DRAWS™ HAT.pdf"
+      dest: "/home/{{ pi_user }}/Desktop/Activating your DRAWS™ HAT.pdf"

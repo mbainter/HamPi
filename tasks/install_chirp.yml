@@ -9,7 +9,7 @@
 
   - name: Create directory hamradio
     file:
-      path: /home/pi/hamradio
+      path: "/home/{{ pi_user }}/hamradio"
       state: directory
 
   - name: Install Chirp prerequisite packages
@@ -34,7 +34,7 @@
   - name: Download and Unarchive Chirp {{ download_date.stdout_lines[0] }}
     unarchive:
       src: "https://trac.chirp.danplanet.com/chirp_daily/LATEST/chirp-daily-{{ download_date.stdout_lines[0] }}.tar.gz"
-      dest: "/home/pi/hamradio/"
+      dest: "/home/{{ pi_user }}/hamradio/"
       remote_src: yes
       validate_certs: no
 
@@ -42,7 +42,7 @@
     become: yes
     command: python setup.py install
     args:
-      chdir: "/home/pi/hamradio/chirp-daily-{{ download_date.stdout_lines[0] }}"
+      chdir: "/home/{{ pi_user }}/hamradio/chirp-daily-{{ download_date.stdout_lines[0] }}"
 
   - name: Modify categories for chirp.desktop
     become: yes
@@ -54,5 +54,5 @@
   - name: Remove Chirp {{ download_date.stdout_lines[0] }} build directory
     become: yes
     file:
-      path: /home/pi/hamradio/chirp-daily-{{ download_date.stdout_lines[0] }}
+      path: "/home/{{ pi_user }}/hamradio/chirp-daily-{{ download_date.stdout_lines[0] }}"
       state: absent

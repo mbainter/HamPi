@@ -14,7 +14,7 @@
 
   - name: Create directory hamradio
     file:
-      path: /home/pi/hamradio
+      path: "/home/{{ pi_user }}/hamradio"
       state: directory
 
   - name: Install dependent libraries
@@ -45,24 +45,24 @@
   - name: Download and Unarchive QSSTV {{ download_date.stdout_lines[0] }}
     unarchive:
       src: "http://users.telenet.be/on4qz/qsstv/downloads/qsstv_{{ download_date.stdout_lines[0] }}.tar.gz"
-      dest: "/home/pi/hamradio/"
+      dest: "/home/{{ pi_user }}/hamradio/"
       remote_src: yes
 
   - name: Build QSSTV Makefile {{ download_date.stdout_lines[0] }}
     command: qmake
     args:
-      chdir: "/home/pi/hamradio/qsstv_{{ download_date.stdout_lines[0] }}"
+      chdir: "/home/{{ pi_user }}/hamradio/qsstv_{{ download_date.stdout_lines[0] }}"
 
   - name: Build QSSTV {{ download_date.stdout_lines[0] }}
     command: make
     args:
-      chdir: "/home/pi/hamradio/qsstv_{{ download_date.stdout_lines[0] }}"
+      chdir: "/home/{{ pi_user }}/hamradio/qsstv_{{ download_date.stdout_lines[0] }}"
 
   - name: Install QSSTV {{ download_date.stdout_lines[0] }}
     become: yes
     command: make install
     args:
-      chdir: "/home/pi/hamradio/qsstv_{{ download_date.stdout_lines[0] }}"
+      chdir: "/home/{{ pi_user }}/hamradio/qsstv_{{ download_date.stdout_lines[0] }}"
 
   - name: Modify categories for qsstv.desktop
     become: yes
@@ -73,5 +73,5 @@
 
   - name: Remove QSSTV {{ download_date.stdout_lines[0] }} build directory
     file:
-      path: /home/pi/hamradio/qsstv_{{ download_date.stdout_lines[0] }}
+      path: "/home/{{ pi_user }}/hamradio/qsstv_{{ download_date.stdout_lines[0] }}"
       state: absent

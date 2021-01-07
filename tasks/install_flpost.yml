@@ -13,7 +13,7 @@
 
     - name: Create directory hamradio
       file:
-        path: /home/pi/hamradio
+        path: "/home/{{ pi_user }}/hamradio"
         state: directory
 
     - name: Install dependent libraries
@@ -39,24 +39,24 @@
     - name: Download and Unarchive flpost {{ download_date.stdout_lines[0] }}
       unarchive:
         src: "http://www.w1hkj.com/alpha/flpost/flpost-{{ download_date.stdout_lines[0] }}.tar.gz"
-        dest: "/home/pi/hamradio/"
+        dest: "/home/{{ pi_user }}/hamradio/"
         remote_src: yes
 
     - name: Configure flpost {{ download_date.stdout_lines[0] }}
       command: ./configure
       args:
-        chdir: /home/pi/hamradio/flpost-{{ download_date.stdout_lines[0] }}
+        chdir: "/home/{{ pi_user }}/hamradio/flpost-{{ download_date.stdout_lines[0] }}"
 
     - name: Build flpost {{ download_date.stdout_lines[0] }}
       command: make all
       args:
-        chdir: /home/pi/hamradio/flpost-{{ download_date.stdout_lines[0] }}
+        chdir: "/home/{{ pi_user }}/hamradio/flpost-{{ download_date.stdout_lines[0] }}"
 
     - name: Install flpost {{ download_date.stdout_lines[0] }}
       become: yes
       command: make install
       args:
-        chdir: /home/pi/hamradio/flpost-{{ download_date.stdout_lines[0] }}
+        chdir: "/home/{{ pi_user }}/hamradio/flpost-{{ download_date.stdout_lines[0] }}"
 
     - name: Modify categories for flpost.desktop
       become: yes
@@ -67,5 +67,5 @@
 
     - name: Remove flpost {{ download_date.stdout_lines[0] }} build directory
       file:
-        path: /home/pi/hamradio/flpost-{{ download_date.stdout_lines[0] }}
+        path: "/home/{{ pi_user }}/hamradio/flpost-{{ download_date.stdout_lines[0] }}"
         state: absent

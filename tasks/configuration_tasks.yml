@@ -74,13 +74,13 @@
 
   - name: Add the user 'pi' to group of 'dialout'
     user:
-      name: pi
+      name: {{ pi_user }}
       groups: dialout
       append: yes
 
   - name: Add the user 'pi' to group of 'plugdev'
     user:
-      name: pi
+      name: {{ pi_user }}
       groups: plugdev
       append: yes
 
@@ -88,33 +88,42 @@
   # Note: backup: yes cannot be used on /boot filesystem as
   # it creates an invalid filename pattern which causes this
   # to fail
-  - name: Configure Pi to use 64-bit kernel
-    become: yes
-    blockinfile:
-      dest: /boot/config.txt
-      block: |
-        arm_64bit=1
-    when: ansible_architecture == "armhf" or ansible_architecture == "armv7l"
+  #  - name: Configure Pi to use 64-bit kernel
+  #  become: yes
+  #  blockinfile:
+  #    dest: /boot/config.txt
+  #    block: |
+  #      arm_64bit=1
+  #  when: ansible_architecture == "armhf" or ansible_architecture == "armv7l"
 
-  - name: Update Pi to use 64-bit Kernel
-    become: yes
-    command: echo "y" | rpi-update
-    when: ansible_architecture == "armhf" or ansible_architecture == "armv7l"
+  # - name: Update Pi to use 64-bit Kernel
+  #   become: yes
+  #   command: echo "y" | rpi-update
+  #   when: ansible_architecture == "armhf" or ansible_architecture == "armv7l"
 
-  - name: Enable Pi VNC Server (32 bit ARM)
+  - name: Enable VNC Server (32 bit ARM)
     become: yes
-    file:
-      dest: /etc/systemd/system/multi-user.target.wants/vncserver-x11-serviced.service
-      src: /usr/lib/systemd/system/vncserver-x11-serviced.service
-      state: link
+    systemd:
+      name: vncserver
+      enabled: yes
+      state: started
     when: ansible_architecture == "armhf" or ansible_architecture == "armv7l"
     ignore_errors: yes
 
-  - name: Start Pi VNC Server (32 bit ARM)
-    become: yes
-    command: systemctl start vncserver-x11-serviced
-    when: ansible_architecture == "armhf" or ansible_architecture == "armv7l"
-    ignore_errors: yes
+#  - name: Enable Pi VNC Server (32 bit ARM)
+#    become: yes
+#    file:
+#      dest: /etc/systemd/system/multi-user.target.wants/vncserver-x11-serviced.service
+#      src: /usr/lib/systemd/system/vncserver-x11-serviced.service
+#      state: link
+#    when: ansible_architecture == "armhf" or ansible_architecture == "armv7l"
+#    ignore_errors: yes
+#
+#  - name: Start Pi VNC Server (32 bit ARM)
+#    become: yes
+#    command: systemctl start vncserver-x11-serviced
+#    when: ansible_architecture == "armhf" or ansible_architecture == "armv7l"
+#    ignore_errors: yes
 
   - name: Install Pi VNC Server (64 bit ARM)
     become: yes
@@ -143,15 +152,15 @@
       src: "{{ playbook_dir }}/../files/etc/xdg/pcmanfm/LXDE-pi/desktop-items-1.conf"
       dest: "/etc/xdg/pcmanfm/LXDE-pi/desktop-items-1.conf"
 
-  - name: Create /home/pi/.config/pcmanfm/LXDE-pi directory
+  - name: Create ~/.config/pcmanfm/LXDE-pi directory
     file:
-      path: /home/pi/.config/pcmanfm/LXDE-pi
+      path: "/home/{{ pi_user }}/.config/pcmanfm/LXDE-pi"
       state: directory
 
-  - name: Create HamPi desktop config in /home/pi/.config/pcmanfm/LXDE-pi
+  - name: Create HamPi desktop config in ~/.config/pcmanfm/LXDE-pi
     copy:
-      src: "{{ playbook_dir }}/../files/home/pi/.config/pcmanfm/LXDE-pi/desktop-items-0.conf"
-      dest: "/home/pi/.config/pcmanfm/LXDE-pi/desktop-items-0.conf"
+      src: "{{ playbook_dir }}/../files/home/{{ pi_user }}/.config/pcmanfm/LXDE-pi/desktop-items-0.conf"
+      dest: "/home/{{ pi_user }}/.config/pcmanfm/LXDE-pi/desktop-items-0.conf"
 
   - name: Create /etc/lightdm
     become: yes
@@ -165,29 +174,29 @@
       src: "{{ playbook_dir }}/../files/etc/lightdm/pi-greeter.conf"
       dest: "/etc/lightdm/pi-greeter.conf"
 
-  - name: Create /home/pi/Desktop directory
+  - name: Create /home/{{ pi_user }}/Desktop directory
     file:
-      path: /home/pi/Desktop
+      path: "/home/{{ pi_user }}/Desktop"
       state: directory
 
-  - name: Create HamPi README in /home/pi/Desktop
+  - name: Create HamPi README in ~/Desktop
     copy:
-      src: "{{ playbook_dir }}/../files/home/pi/Desktop/HAMPI README.doc"
-      dest: "/home/pi/Desktop/HAMPI README.doc"
+      src: "{{ playbook_dir }}/../files/home/{{ pi_user }}/Desktop/HAMPI README.doc"
+      dest: "/home/{{ pi_user }}/Desktop/HAMPI README.doc"
 
-  - name: Create HamPi LICENSE in /home/pi/Desktop
+  - name: Create HamPi LICENSE in /home/{{ pi_user }}/Desktop
     copy:
-      src: "{{ playbook_dir }}/../files/home/pi/Desktop/HAMPI LICENSE.TXT"
-      dest: "/home/pi/Desktop/HAMPI LICENSE.TXT"
+      src: "{{ playbook_dir }}/../files/home/{{ pi_user }}/Desktop/HAMPI LICENSE.TXT"
+      dest: "/home/{{ pi_user }}/Desktop/HAMPI LICENSE.TXT"
 
-  - name: Create GIVE BACK in /home/pi/Desktop
+  - name: Create GIVE BACK in /home/{{ pi_user }}/Desktop
     copy:
-      src: "{{ playbook_dir }}/../files/home/pi/Desktop/GIVE BACK.PDF"
-      dest: "/home/pi/Desktop/GIVE BACK.PDF"
+      src: "{{ playbook_dir }}/../files/home/{{ pi_user }}/Desktop/GIVE BACK.PDF"
+      dest: "/home/{{ pi_user }}/Desktop/GIVE BACK.PDF"
 
   - name: Insert .bash_local configuration
     blockinfile:
-      dest: /home/pi/.bash_local
+      dest: /home/{{ pi_user }}/.bash_local
       create: yes
       block: |
         # BUILD OPTIONS
@@ -211,7 +220,7 @@
 
   - name: Insert .bashrc configuration
     blockinfile:
-      dest: /home/pi/.bashrc
+      dest: "/home/{{ pi_user }}/.bashrc"
       block: |
         if [ -f ~/.bash_local ]; then
             . ~/.bash_local

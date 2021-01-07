@@ -8,7 +8,7 @@
 
   - name: Create directory hamradio
     file:
-      path: /home/pi/hamradio
+      path: "/home/{{ pi_user }}/hamradio"
       state: directory
 
   - name: Determine latest version of sparksdr on web

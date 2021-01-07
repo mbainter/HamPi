@@ -19,7 +19,7 @@
   
   - name: Create directory hamradio
     file:
-      path: /home/pi/hamradio
+      path: "/home/{{ pi_user }}/hamradio"
       state: directory
 
   - name: Install dependent libraries - libssl-dev
@@ -50,26 +50,26 @@
   - name: Download and Unarchive CMake {{ cmake_version.stdout_lines[0] }} sources
     unarchive:
       src: https://github.com/Kitware/CMake/releases/download/v{{ cmake_version.stdout_lines[0] }}/cmake-{{ cmake_version.stdout_lines[0] }}.tar.gz
-      dest: /home/pi/hamradio
+      dest: "/home/{{ pi_user }}/hamradio"
       remote_src: yes
 
   - name: Configure CMake {{ cmake_version.stdout_lines[0] }}
     command: ./configure
     args:
-      chdir: /home/pi/hamradio/cmake-{{ cmake_version.stdout_lines[0] }}
+      chdir: "/home/{{ pi_user }}/hamradio/cmake-{{ cmake_version.stdout_lines[0] }}"
 
   - name: Build CMake {{ cmake_version.stdout_lines[0] }}
     command: make
     args:
-      chdir: /home/pi/hamradio/cmake-{{ cmake_version.stdout_lines[0] }}
+      chdir: "/home/{{ pi_user }}/hamradio/cmake-{{ cmake_version.stdout_lines[0] }}"
 
   - name: Install CMake {{ cmake_version.stdout_lines[0] }}
     become: yes
     command: make install
     args:
-      chdir: /home/pi/hamradio/cmake-{{ cmake_version.stdout_lines[0] }}
+      chdir: "/home/{{ pi_user }}/hamradio/cmake-{{ cmake_version.stdout_lines[0] }}"
 
   - name: Remove CMake {{ cmake_version.stdout_lines[0] }} build directory
     file:
-      path: /home/pi/hamradio/cmake-{{ cmake_version.stdout_lines[0] }}
+      path: "/home/{{ pi_user }}/hamradio/cmake-{{ cmake_version.stdout_lines[0] }}"
       state: absent

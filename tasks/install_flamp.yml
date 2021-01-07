@@ -13,7 +13,7 @@
 
     - name: Create directory hamradio
       file:
-        path: /home/pi/hamradio
+        path: "/home/{{ pi_user }}/hamradio"
         state: directory
 
     - name: Install dependent libraries
@@ -38,24 +38,24 @@
     - name: Download and Unarchive flamp {{ download_date.stdout_lines[0] }}
       unarchive:
         src: "http://www.w1hkj.com/files/flamp/flamp-{{ download_date.stdout_lines[0] }}.tar.gz"
-        dest: "/home/pi/hamradio/"
+        dest: "/home/{{ pi_user }}/hamradio/"
         remote_src: yes
 
     - name: Configure flamp {{ download_date.stdout_lines[0] }}
       command: ./configure
       args:
-        chdir: /home/pi/hamradio/flamp-{{ download_date.stdout_lines[0] }}
+        chdir: "/home/{{ pi_user }}/hamradio/flamp-{{ download_date.stdout_lines[0] }}"
 
     - name: Build flamp {{ download_date.stdout_lines[0] }}
       command: make all
       args:
-        chdir: /home/pi/hamradio/flamp-{{ download_date.stdout_lines[0] }}
+        chdir: "/home/{{ pi_user }}/hamradio/flamp-{{ download_date.stdout_lines[0] }}"
 
     - name: Install flamp {{ download_date.stdout_lines[0] }}
       become: yes
       command: make install
       args:
-        chdir: /home/pi/hamradio/flamp-{{ download_date.stdout_lines[0] }}
+        chdir: "/home/{{ pi_user }}/hamradio/flamp-{{ download_date.stdout_lines[0] }}"
 
     - name: Modify categories for flamp.desktop
       become: yes
@@ -66,5 +66,5 @@
 
     - name: Remove flamp {{ download_date.stdout_lines[0] }} build directory
       file:
-        path: /home/pi/hamradio/flamp-{{ download_date.stdout_lines[0] }}
+        path: "/home/{{ pi_user }}/hamradio/flamp-{{ download_date.stdout_lines[0] }}"
         state: absent

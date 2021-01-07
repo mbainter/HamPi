@@ -14,7 +14,7 @@
 
   - name: Create directory hamradio
     file:
-      path: /home/pi/hamradio
+      path: "/home/{{ pi_user }}/hamradio"
       state: directory
 
   - name: Create directory /opt/build
@@ -25,7 +25,7 @@
 
   - name: Change Ownership of /opt/build to pi
     become: yes
-    file: dest=/opt/build owner=pi
+    file: dest=/opt/build owner={{ pi_user }}
 
   - name: Create directory /opt/install
     become: yes

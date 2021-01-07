@@ -13,7 +13,7 @@
 
     - name: Create directory hamradio
       file:
-        path: /home/pi/hamradio
+        path: "/home/{{ pi_user }}/hamradio"
         state: directory
 
     - name: Install dependent libraries
@@ -37,24 +37,24 @@
     - name: Download and Unarchive fllog {{ download_date.stdout_lines[0] }}
       unarchive:
         src: "http://www.w1hkj.com/files/fllog/fllog-{{ download_date.stdout_lines[0] }}.tar.gz"
-        dest: "/home/pi/hamradio/"
+        dest: "/home/{{ pi_user }}/hamradio/"
         remote_src: yes
 
     - name: Configure fllog {{ download_date.stdout_lines[0] }}
       command: ./configure
       args:
-        chdir: /home/pi/hamradio/fllog-{{ download_date.stdout_lines[0] }}
+        chdir: "/home/{{ pi_user }}/hamradio/fllog-{{ download_date.stdout_lines[0] }}"
 
     - name: Build fllog {{ download_date.stdout_lines[0] }}
       command: make all
       args:
-        chdir: /home/pi/hamradio/fllog-{{ download_date.stdout_lines[0] }}
+        chdir: "/home/{{ pi_user }}/hamradio/fllog-{{ download_date.stdout_lines[0] }}"
 
     - name: Install fllog {{ download_date.stdout_lines[0] }}
       become: yes
       command: make install
       args:
-        chdir: /home/pi/hamradio/fllog-{{ download_date.stdout_lines[0] }}
+        chdir: "/home/{{ pi_user }}/hamradio/fllog-{{ download_date.stdout_lines[0] }}"
 
     - name: Modify categories for fllog.desktop
       become: yes
@@ -65,5 +65,5 @@
 
     - name: Remove fllog {{ download_date.stdout_lines[0] }} build directory
       file:
-        path: /home/pi/hamradio/fllog-{{ download_date.stdout_lines[0] }}
+        path: "/home/{{ pi_user }}/hamradio/fllog-{{ download_date.stdout_lines[0] }}"
         state: absent

@@ -9,23 +9,23 @@
 
   - name: Create directory lxsession/LXDE-pi
     file:
-      path: /home/pi/.config/lxsession/LXDE-pi
+      path: "/home/{{ pi_user }}/.config/lxsession/LXDE-{{ pi_user }}"
       state: directory
 
   - name: Install executable QSLware nag script
     become: yes
     copy:
-      src: "{{ playbook_dir }}/../files/home/pi/.config/lxsession/LXDE-pi/qslware.sh"
-      dest: "/home/pi/.config/lxsession/LXDE-pi/qslware.sh"
+      src: "{{ playbook_dir }}/../files/home/{{ pi_user }}/.config/lxsession/LXDE-{{ pi_user }}/qslware.sh"
+      dest: "/home/{{ pi_user }}/.config/lxsession/LXDE-{{ pi_user }}/qslware.sh"
       mode: a+x
 
   - name: Install lxsession autostart
     copy:
-      src: "{{ playbook_dir }}/../files/home/pi/.config/lxsession/LXDE-pi/autostart"
-      dest: "/home/pi/.config/lxsession/LXDE-pi/autostart"
+      src: "{{ playbook_dir }}/../files/home/{{ pi_user }}/.config/lxsession/LXDE-{{ pi_user }}/autostart"
+      dest: "/home/{{ pi_user }}/.config/lxsession/LXDE-{{ pi_user }}/autostart"
 
   - name: Install remove script
     copy:
-      src: "{{ playbook_dir }}/../files/home/pi/.config/lxsession/LXDE-pi/remove_nag_dialog"
-      dest: "/home/pi/.config/lxsession/LXDE-pi/remove_nag_dialog"
+      src: "{{ playbook_dir }}/../files/home/{{ pi_user }}/.config/lxsession/LXDE-{{ pi_user }}/remove_nag_dialog"
+      dest: "/home/{{ pi_user }}/.config/lxsession/LXDE-{{ pi_user }}/remove_nag_dialog"
       mode: a+x

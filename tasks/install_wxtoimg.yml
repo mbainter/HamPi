@@ -8,7 +8,7 @@
 
   - name: Create directory hamradio
     file:
-      path: /home/pi/hamradio
+      path: "/home/{{ pi_user }}/hamradio"
       state: directory
 
 #
@@ -29,20 +29,20 @@
   - name: Download wxtoimg {{ wxtoimg_version.stdout_lines[0] }} (ARM)
     get_url:
       url: "https://wxtoimgrestored.xyz/beta/wxtoimg-linux-armhf-{{ wxtoimg_version.stdout_lines[0] }}-beta.tar.gz"
-      dest: /home/pi/hamradio/wxtoimg-linux-armhf-{{ wxtoimg_version.stdout_lines[0] }}-beta.tar.gz
+      dest: "/home/{{ pi_user }}/hamradio/wxtoimg-linux-armhf-{{ wxtoimg_version.stdout_lines[0] }}-beta.tar.gz"
     when: ansible_architecture == "armhf" or ansible_architecture == "armv7l" or ansible_architecture == "aarch64"
 
   - name: Install wxtoimg {{ wxtoimg_version.stdout_lines[0] }} (ARM)
     become: yes
     shell: tar -xzvf wxtoimg-linux-armhf-{{ wxtoimg_version.stdout_lines[0] }}-beta.tar.gz --directory /
     args:
-      chdir: /home/pi/hamradio/
+      chdir: "/home/{{ pi_user }}/hamradio/"
       warn: no
     when: ansible_architecture == "armhf" or ansible_architecture == "armv7l" or ansible_architecture == "aarch64"
 
   - name: Remove wxtoimg {{ wxtoimg_version.stdout_lines[0] }} gzip (ARM)
     file:
-      path: /home/pi/hamradio/wxtoimg-linux-armhf-{{ wxtoimg_version.stdout_lines[0] }}-beta.tar.gz
+      path: "/home/{{ pi_user }}/hamradio/wxtoimg-linux-armhf-{{ wxtoimg_version.stdout_lines[0] }}-beta.tar.gz"
       state: absent
     when: ansible_architecture == "armhf" or ansible_architecture == "armv7l" or ansible_architecture == "aarch64"
 
@@ -64,17 +64,17 @@
   - name: Download wxtoimg {{ wxtoimg_version.stdout_lines[0] }} (x86)
     get_url:
       url: "https://wxtoimgrestored.xyz/beta/wxtoimg-i386-{{ wxtoimg_version.stdout_lines[0] }}-beta.deb"
-      dest: /home/pi/hamradio/wxtoimg-i386-{{ wxtoimg_version.stdout_lines[0] }}-beta.deb
+      dest: "/home/{{ pi_user }}/hamradio/wxtoimg-i386-{{ wxtoimg_version.stdout_lines[0] }}-beta.deb"
     when: ansible_architecture == "i386"
 
   - name: Install wxtoimg {{ wxtoimg_version.stdout_lines[0] }} (x86)
     become: yes
     apt:
-      deb: /home/pi/hamradio/wxtoimg-i386-{{ wxtoimg_version.stdout_lines[0] }}-beta.deb
+      deb: "/home/{{ pi_user }}/hamradio/wxtoimg-i386-{{ wxtoimg_version.stdout_lines[0] }}-beta.deb"
     when: ansible_architecture == "i386"
 
   - name: Remove wxtoimg {{ wxtoimg_version.stdout_lines[0] }} installer (x86)
     file:
-      path: /home/pi/hamradio/wxtoimg-i386-{{ wxtoimg_version.stdout_lines[0] }}-beta.deb
+      path: "/home/{{ pi_user }}/hamradio/wxtoimg-i386-{{ wxtoimg_version.stdout_lines[0] }}-beta.deb"
       state: absent
     when: ansible_architecture == "i386"

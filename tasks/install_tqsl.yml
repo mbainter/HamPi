@@ -13,7 +13,7 @@
 
   - name: Create directory hamradio
     file:
-      path: /home/pi/hamradio
+      path: "/home/{{ pi_user }}/hamradio"
       state: directory
 
   - name: Install dependent libraries
@@ -39,24 +39,24 @@
   - name: Download and Unarchive TQSL {{ tqsl_version.stdout_lines[0] }}
     unarchive:
       src: "http://www.arrl.org/files/file/LoTW%20Instructions/tqsl-{{ tqsl_version.stdout_lines[0] }}.tar.gz"
-      dest: "/home/pi/hamradio/"
+      dest: "/home/{{ pi_user }}/hamradio/"
       remote_src: yes
 
   - name: Configure TQSL {{ tqsl_version.stdout_lines[0] }}
     command: cmake .
     args:
-      chdir: /home/pi/hamradio/tqsl-{{ tqsl_version.stdout_lines[0] }}
+      chdir: "/home/{{ pi_user }}/hamradio/tqsl-{{ tqsl_version.stdout_lines[0] }}"
 
   - name: Build TQSL {{ tqsl_version.stdout_lines[0] }}
     command: make
     args:
-      chdir: /home/pi/hamradio/tqsl-{{ tqsl_version.stdout_lines[0] }}
+      chdir: "/home/{{ pi_user }}/hamradio/tqsl-{{ tqsl_version.stdout_lines[0] }}"
 
   - name: Install TQSL {{ tqsl_version.stdout_lines[0] }}
     become: yes
     command: make install
     args:
-      chdir: /home/pi/hamradio/tqsl-{{ tqsl_version.stdout_lines[0] }}
+      chdir: "/home/{{ pi_user }}/hamradio/tqsl-{{ tqsl_version.stdout_lines[0] }}"
 
   - name: Modify categories for tqsl.desktop
     become: yes
@@ -67,5 +67,5 @@
 
   - name: Remove TQSL {{ tqsl_version.stdout_lines[0] }} build directory
     file:
-      path: /home/pi/hamradio/tqsl-{{ tqsl_version.stdout_lines[0] }}
+      path: "/home/{{ pi_user }}/hamradio/tqsl-{{ tqsl_version.stdout_lines[0] }}"
       state: absent

@@ -9,7 +9,7 @@
 
   - name: Create hamradio directory
     file:
-      path: /home/pi/hamradio
+      path: "/home/{{ pi_user }}/hamradio"
       state: directory
 
   - name: Add SCS APT Repository

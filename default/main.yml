@@ -27,3 +27,7 @@ wsjtx_221_md5sum_i386: e72c09c49d3ff72ca1abf2b44c3ffbf4
 wsjtx_222_md5sum_armf: b7b685db0845670bee507da511766c6a
 wsjtx_222_md5sum_amd64: 5aaa2935bcd8dc7a49ddf3cbbe257f80
 wsjtx_222_md5sum_i386: 21309cddcad6b586ca47490965855ce0
+
+pi_user: dietpi
+pi_group: dietpi
+vnc_software: tigervncserver
